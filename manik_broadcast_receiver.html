@@ -1,0 +1,206 @@
+<html lang=en>
+
+
+
+<p><strong>Table of Contents:</strong></p>
+
+<ol>  
+<li><a href='#demo'>Demo</a></li>          
+<li><a href='#introduction'>Introduction</a></li>
+<li><a href='#what-is-broadcast-receiver'>What is Broadcast Receiver?</a></li>
+
+<li>
+An Example:
+<br>
+<ol>
+
+<li><a href='#customBroadcastReceiverClass'>Creating a custom Broadcast Receiver class.</a></li>
+<li><a href='#registerBroadcastReceiver'>Registering a Broadcast Receiver</a></li>
+<li><a href='#DesigningLayout'>Designing Layout</a></li>
+<li><a href='#implementBroadcastReceiver'>Implementing Broadcast Receiver in Activity</a></li>
+<li><a href='#addingactions'>Adding actions to Intent filter</a></li>
+
+
+</ol>
+</ol>
+</li>
+</ul>
+<br>
+<br><br>
+
+<h3 id='demo'>Demo</h3>
+<br>
+<div class="row justify-content-md-center">
+<img class="img-fluid text-center"
+src = "Desktop\broadcastreceiverdemo.gif">
+</div>
+<br><br><br>
+
+
+<h3 id='introduction'>Introduction</h3>
+<br>
+In this blog I'm going to show you how to use a Broadcast Reciever in Android.<br><br><br>
+
+
+<h3 id='what-is-broadcast-receiver'>What is a Broadcast Receiver?</h3>
+<br>
+
+<b>Broadcast Reciever : </b>A Broadcast Reciever is one of the five components of Android. In simple language, on occurence of some
+system or application events such as Low Battery, Connection State change, etc. Android system sends a broadcast event to the application and based 
+on that events, our application can responds to them. 
+
+<br><br><br>
+
+
+<h3 id='customBroadcastReceiverClass'>Creating a custom Broadcast Receiver class</h3>
+<br>
+Create a new Java class "MyReceiver.java" which extends from BroadcastReceiver and override "onReceive()" method.If the event happens for which our Broadcast Receiver is registered then Android system will call this method
+, it takes two parameters context and Intent.
+<br><br>
+<script src="https://gist.github.com/Manik1094/6fede8c741639124521bf38560ef76d2.js"></script>
+<br><br><br>
+
+
+<h3 id='registerBroadcastReceiver'>Registering a Broadcast Receiver</h3>
+<br>
+Open AndroidManifest.xml file and register your custom BroadcastReceiver class in receiver tag(All the components of Android must be registered in AndroidManifest.xml file).The following code should be included in application tag , exported = "false" means that the other applications can't use this Receiver.<br><br>
+<script src="https://gist.github.com/Manik1094/9297fe9e54267c2c242ab725cbdfa153.js"></script>
+
+
+<br><br><br>
+
+
+<h3 id='DesigningLayout'>Designing Layout</h3>
+<br>
+Open activity_main.xml file and add the following code . This layout contains button on click of which we will register our broadcast receiver.<br><br>
+<script src="https://gist.github.com/Manik1094/65a8fb98c31b77ac2ae1b6d75c0d214a.js"></script>
+
+<br><br><br>
+
+
+<h3 id='implementBroadcastReceiver'>Implementing Broadcast Receiver in Activity</h3>
+<br>
+Open MainActivity.java file and add the following code , we are creating objects of MyReceiver class , Button and IntentFilter(IntentFilter is used for filtering the intents based on some actions and category) outside of onCreate() and in onCreate() when button is clicked we are registering a receiver followed by onDestroy() in which we are unregistering a receiver.<br><br>
+
+<b>Note: </b>In this article I haven't added any custom actions in Intent filter yet,this is just a basic setup for the intent filter and broadcast receiver.<br><br>
+<b>How the Intent filter works?</b><br><br>
+Intent filter contains all the "implicit intents" that the app can handle.Suppose an event occured in app then Android system looks for intent filter with that event and the components which can handle the event will be called.<br><br>
+
+
+<b>Why we need to unregister a Broadcast Receiver in onDestroy()?</b><br><br>
+If we don't unregister a receiver in onDestroy() then it still holds the reference to activity , even if we close the activity this leads to Memory leaks(Memory which is allocated but never freed) in android and Garbage collector will not be able to free that unused memory.<br><br> 
+
+
+<script src="https://gist.github.com/Manik1094/28f58af26f9d17982fb8791e67336e87.js"></script>
+<br><br><br>
+
+
+<h3 id='addingactions'>Adding actions to Intent filter</h3>
+<br>
+We are adding some actions to Intent filter object so that when System receives the intents then it searches the receivers based on actions specified in Intent filter object.
+<ul>
+<li><b>ACTION_POWER_DISCONNECTED</b> : This action is called or you can say system sends an intent as broadcast every time when power supply got disconnected and then we can show a Toast notifying the user.This can be done in two steps :<br><br>
+  <ul>
+  <li>Open MainActivity.java and inside onCreate() add the following code.   <br><br>
+  <script src="https://gist.github.com/Manik1094/e56a94fe80c441012ebf61ab92708359.js"></script>
+<br><br>
+  
+  </li>
+  <li>Open MyReceiver.java and inside onReceive() add the following code. In this code from intent object we are retreiving action and if action is equal to POWER_DISCONNECTED then we are displaying a toast notifying the user. <br><br>
+<script src="https://gist.github.com/Manik1094/684084e1981ed9cbbdef721f2ffdd9bf.js"></script>
+<br><br>
+</li>
+  </ul>
+</li>
+
+<li><b>ACTION_POWER_CONNECTED</b> : This action is called or you can say system sends an intent as broadcast every time  when power supply got connected and then we can show a Toast notifying the user.This can be done in two steps :<br><br>
+  <ul>
+  <li>Open MainActivity.java and inside onCreate() add the following code.   <br><br>
+  <script src="https://gist.github.com/Manik1094/43f1e244219d1878d343314fa3207507.js"></script>
+<br><br>
+  
+  </li>
+  <li>Open MyReceiver.java and inside switch statement add the following code. We are adding another case for ACTION_POWER_CONNECTED  and displaying a Toast message. <br><br>
+<script src="https://gist.github.com/Manik1094/c458d1e5bac8b3d373d27d0c5a0ae400.js"></script>
+<br><br>
+</li>
+  </ul>
+</li>
+
+<li><b>ACTION_HEADSET_PLUG</b> : This action is called or you can say system sends an intent as broadcast every time when headset got plugged in or plugged out and then we can show a Toast notifying the user.This can be done in two steps :<br><br>
+  <ul>
+  <li>Open MainActivity.java and inside onCreate() add the following code.   <br><br>
+  <script src="https://gist.github.com/Manik1094/9bd43a3acc06c76e4cce61d152dfb4d7.js"></script>
+<br><br>
+  
+  </li>
+  <li>Open MyReceiver.java and inside switch statement add the following code. We are adding another case for ACTION_HEADSET_PLUG  and displaying a Toast message based on value of state. <br><br>
+<script src="https://gist.github.com/Manik1094/3a842b8f8737b43b4ab06dba5bc9c39b.js"></script>
+<br><br>
+</li>
+  </ul>
+</li>
+
+<li><b>ACTION_BATTERY_LOW</b> : This action is called or you can say system sends an intent as broadcast every time when battery is low and then we can show a Toast notifying the user.This can be done in two steps :<br><br>
+  <ul>
+  <li>Open MainActivity.java and inside onCreate() add the following code.   <br><br>
+  <script src="https://gist.github.com/Manik1094/4afc80155dc3de701fbe3d2c93dce7ae.js"></script>
+<br><br>
+  
+  </li>
+  <li>Open MyReceiver.java and inside switch statement add the following code.  We are adding another case for ACTION_BATTERY_LOW  and displaying a Toast message. <br><br>
+<script src="https://gist.github.com/Manik1094/7db550e79e90f9f35d11adaa738fa7bc.js"></script>
+<br><br>
+</li>
+  </ul>
+</li>
+
+<li><b>ACTION_BATTERY_OKAY</b> : This action is called or you can say system sends an intent as broadcast every time when battery is okay this indicates that battery is now okay after being low and then we can show a Toast notifying the user.This can be done in two steps :<br><br>
+  <ul>
+  <li>Open MainActivity.java and inside onCreate() add the following code.   <br><br>
+  <script src="https://gist.github.com/Manik1094/d72e954a26fccacd05dcf7d17d217043.js"></script>
+<br><br>
+  
+  </li>
+  <li>Open MyReceiver.java and inside switch statement add the following code. We are adding another case for ACTION_BATTERY_LOW  and displaying a Toast message. <br><br>
+<script src="https://gist.github.com/Manik1094/96fa20407a10fc60837eba810e0daa9e.js"></script>
+<br><br>
+</li>
+  </ul>
+</li>
+
+<li><b>ACTION_AIRPLANE_MODE_CHANGED</b> : This action is called or you can say system sends an intent as broadcast every time when user switched the phone into or out of Airplane Mode and then we can show a Toast notifying the user.This can be done in two steps :<br><br>
+  <ul>
+  <li>Open MainActivity.java and inside onCreate() add the following code.   <br><br>
+  <script src="https://gist.github.com/Manik1094/e15bd18129026150502396ba9e6a5060.js"></script>
+<br><br>
+  
+  </li>
+  <li>Open MyReceiver.java and inside switch statement add the following code. We are adding another case for ACTION_AIRPLANE_MODE_CHANGED  and displaying a Toast message based on value of state. <br><br>
+<script src="https://gist.github.com/Manik1094/4b7b4735140323b917aea3bb2b3f53b5.js"></script>
+<br><br>
+</li>
+  </ul>
+</li>
+
+
+
+
+</ul> 
+<br><br><br>
+
+
+
+
+That's All! Happy Coding!
+<br><br><br>
+
+
+The complete code is available <a href="https://github.com/Manik1094/BroadcastReceiverExample" target="_blank" rel="nofollow">here</a>.
+<br><br><br>
+
+
+
+
+
+</html>
